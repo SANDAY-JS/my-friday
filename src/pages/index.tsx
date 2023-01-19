@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import axios from "axios";
 
@@ -78,12 +78,13 @@ export default function Home() {
         <form
           onSubmit={submitText}
           className={`
-            w-full max-w-2xl flex flex-col items-center gap-5
-            lg:mx-auto lg:w-3/5
+            fixed left-1/2 bottom-10 -translate-x-1/2 w-full max-w-2xl 
+            flex flex-col items-center gap-5
+            lg:w-3/5
           `}
         >
           <input
-            className={`py-1 px-3 border-none bg-transparent text-gray-700`}
+            className={`w-full py-1 px-3 outline outline-gray-50 rounded-sm bg-transparent text-gray-50`}
             type="text"
             placeholder="Hello, F.R.Y.D.A.Y"
             value={inputText}
