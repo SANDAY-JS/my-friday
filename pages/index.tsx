@@ -12,14 +12,14 @@ export default function Home() {
   /** Submit */
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [friday, setFriday] = useState<string>("");
+  const [friday, setFriday] = useState<string[]>([]);
   const submitText = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!msg || loading) return;
 
     const data: SubmitData = {
-      email: process.env.NEXT_CHATGPT_AUTH_EMAIL,
-      password: process.env.NEXT_CHATGPT_AUTH_PASSWORD,
+      email: process.env.NEXT_PUBLIC_OPENAI_EMAIL as string,
+      password: process.env.NEXT_PUBLIC_OPENAI_PASSWORD as string,
       msg: msg,
     };
 
@@ -29,7 +29,7 @@ export default function Home() {
       await axios
         .post("/api/friday", data)
         .then((res) => {
-          setFriday(res.data);
+          setFriday([...friday, res.data]);
           console.log("🚀 ~ file: index.tsx:36 ~ .then ~ res.data", res.data);
           setLoading(false);
         })
@@ -55,7 +55,13 @@ export default function Home() {
       <main className={`w-full `}>
         <h1 className={``}>Hello, Friday</h1>
 
-        {friday && <div className={``}>{friday}</div>}
+        {friday.length > 0 && (
+          <div className={`flex flex-col gap-10`}>
+            {friday.map((str, i) => (
+              <p key={i}>{str}</p>
+            ))}
+          </div>
+        )}
         {error && <div className={``}>{error}</div>}
 
         <form
