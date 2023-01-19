@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import axios from "axios";
 
@@ -12,25 +12,30 @@ export default function Home() {
   /** Submit */
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [friday, setFriday] = useState<string[]>([]);
+  const [friday, setFriday] = useState<ResponseData[]>([]);
   const submitText = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!msg || loading) return;
 
     const data: SubmitData = {
-      email: process.env.NEXT_PUBLIC_OPENAI_EMAIL as string,
-      password: process.env.NEXT_PUBLIC_OPENAI_PASSWORD as string,
       msg: msg,
+      conversationId:
+        friday.length > 0
+          ? friday[friday.length - 1].conversationId
+          : undefined,
+      messageId:
+        friday.length > 0 ? friday[friday.length - 1].messageId : undefined,
     };
 
     try {
       setError("");
       setLoading(true);
+
       await axios
         .post("/api/friday", data)
         .then((res) => {
           setFriday([...friday, res.data]);
-          console.log("🚀 ~ file: index.tsx:36 ~ .then ~ res.data", res.data);
+          console.log("🫠", res.data);
           setLoading(false);
         })
         .catch(() => {
@@ -55,14 +60,19 @@ export default function Home() {
       <main className={`w-full `}>
         <h1 className={``}>Hello, Friday</h1>
 
+        <h2>
+          Conversation ID:{" "}
+          {friday.length > 0 ? friday[0].conversationId : "..."}
+        </h2>
+
         {friday.length > 0 && (
           <div className={`flex flex-col gap-10`}>
-            {friday.map((str, i) => (
-              <p key={i}>{str}</p>
+            {friday.map((obj) => (
+              <p key={obj.messageId}>{obj.response}</p>
             ))}
           </div>
         )}
-        {error && <div className={``}>{error}</div>}
+        {error && <div className={`text-red-400`}>{error}</div>}
 
         <form
           onSubmit={submitText}
@@ -72,7 +82,7 @@ export default function Home() {
           `}
         >
           <input
-            className={`py-1 px-3 border-none bg-transparent`}
+            className={`py-1 px-3 border-none bg-transparent text-gray-700`}
             type="text"
             placeholder="Hello, F.R.Y.D.A.Y"
             value={msg}

@@ -1,5 +1,11 @@
 type SubmitData = {
-  email: string;
-  password: string;
+  conversationId?: string;
+  messageId?: string;
   msg: string;
+};
+
+type ResponseData = {
+  conversationId: string;
+  messageId: string;
+  response: string;
 };
