@@ -8,4 +8,5 @@ type ResponseData = {
   conversationId: string;
   messageId: string;
   response: string;
+  inputText: string;
 };

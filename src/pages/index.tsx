@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import axios from "axios";
 
 export default function Home() {
+  /** Automatically fcus on the input */
+  const inputTextRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    inputTextRef.current?.focus();
+  }, []);
+
   /** Input Message */
   const [inputText, setInputText] = useState<string>("");
   const changeInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +40,8 @@ export default function Home() {
       await axios
         .post("/api/friday", data)
         .then((res) => {
-          setFriday([...friday, res.data]);
+          const newData = { ...res.data, inputText: inputText };
+          setFriday([...friday, newData]);
           console.log("🫠", res.data);
           setInputText("");
           setLoading(false);
@@ -58,32 +65,31 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={`w-full `}>
-        <h1 className={``}>Hello, Friday</h1>
-
-        <h2>
-          Conversation ID:{" "}
-          {friday.length > 0 ? friday[0].conversationId : "..."}
-        </h2>
-
-        {friday.length > 0 && (
+      <main className={`w-full pt-10`}>
+        {friday.length > 0 ? (
           <div className={`flex flex-col gap-10`}>
             {friday.map((obj) => (
-              <p key={obj.messageId}>{obj.response}</p>
+              <div key={obj.messageId} className={`flex flex-col gap-3`}>
+                <p className={`text-base font-semibold`}>{obj.inputText}</p>
+                <p className={`text-lg font-bold`}>{obj.response}</p>
+              </div>
             ))}
           </div>
+        ) : (
+          <h1 className={``}>Hello, Friday</h1>
         )}
         {error && <div className={`text-red-400`}>{error}</div>}
 
         <form
           onSubmit={submitText}
           className={`
-            fixed left-1/2 bottom-10 -translate-x-1/2 w-full max-w-2xl 
+            fixed left-1/2 bottom-32 -translate-x-1/2 w-5/6 max-w-2xl 
             flex flex-col items-center gap-5
             lg:w-3/5
           `}
         >
           <input
+            ref={inputTextRef}
             className={`w-full py-1 px-3 outline outline-gray-50 rounded-sm bg-transparent text-gray-50`}
             type="text"
             placeholder="Hello, F.R.Y.D.A.Y"
