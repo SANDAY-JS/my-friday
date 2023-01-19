@@ -4,9 +4,9 @@ import axios from "axios";
 
 export default function Home() {
   /** Input Message */
-  const [msg, setMsg] = useState<string>("");
+  const [inputText, setInputText] = useState<string>("");
   const changeInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMsg(e.currentTarget.value);
+    setInputText(e.currentTarget.value);
   };
 
   /** Submit */
@@ -15,10 +15,10 @@ export default function Home() {
   const [friday, setFriday] = useState<ResponseData[]>([]);
   const submitText = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!msg || loading) return;
+    if (!inputText || loading) return;
 
     const data: SubmitData = {
-      msg: msg,
+      msg: inputText,
       conversationId:
         friday.length > 0
           ? friday[friday.length - 1].conversationId
@@ -36,6 +36,7 @@ export default function Home() {
         .then((res) => {
           setFriday([...friday, res.data]);
           console.log("🫠", res.data);
+          setInputText("");
           setLoading(false);
         })
         .catch(() => {
@@ -85,7 +86,7 @@ export default function Home() {
             className={`py-1 px-3 border-none bg-transparent text-gray-700`}
             type="text"
             placeholder="Hello, F.R.Y.D.A.Y"
-            value={msg}
+            value={inputText}
             onChange={changeInputText}
           />
         </form>
