@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body {
   padding: 0;
@@ -13,6 +17,8 @@ a {
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +29,14 @@ a {
     color: white;
     background: black;
   }
+}
+
+
+@layer base {
+  body {
+    @apply bg-gray-800 text-gray-50 px-10 py-5
+  }
+}
+@layer components {
+  
 }
